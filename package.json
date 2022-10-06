@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-icons": "^4.4.0",
+    "uuidv4": "^6.2.13"
+  }
+}
