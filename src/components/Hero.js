@@ -3,63 +3,59 @@ import myData from "../data.json";
 import Filterbar from "./Filterbar";
 import { v4 as uuidv4 } from "uuid";
 
-const setLang = new Set(
-  myData.reduce((item, index) => [...item, ...index.languages], [])
-);
-
-const setTools = new Set(
-  myData.reduce((item, index) => [...item, ...index.tools], [])
-);
+const FILTER_TYPES = {
+  level: 'LEVEL',
+  role: 'ROLE',
+  tools: 'TOOLS',
+  language: 'LANGUAGE',
+};
 
 const Hero = () => {
   const [isFilterOpen, setFilter] = useState(false);
-  const [filterContainer, setFilterContainer] = useState([
-    {
-      id: uuidv4(),
-      level: "",
-      role: "",
-      tools: [],
-      language: [],
-    },
-  ]);
+  const [filterContainer, setFilterContainer] = useState([]);
 
   const handleClick = (e) => {
     setFilter(true);
-    const val = e.target.textContent;
 
-    const language = Array.from(setLang)
-      .map((item) => item)
-      .filter((item) => item === val);
+    // Gets text value from text content
+    const textValue = e.target.textContent;
+    // gets filter type from target name
+    const filterType = FILTER_TYPES[e.target.name];
 
-    const tool = Array.from(setTools)
-      .map((item) => item)
-      .filter((item) => item === val);
+    // Checks if there's already an item with same type & value
+    const itemAlreadyExists = filterContainer.some((item) => (
+      item.type === filterType && item.value === textValue
+    ));
 
-    setFilterContainer((prevVal) => {
-      const newTools = [...tool];
-      const newLanguage = [...language];
-      return [
+    // if item already exists, exit the function
+    if (itemAlreadyExists) return;
+
+    // If item doesn't exist append to the filterContainer list
+    setFilterContainer((prevValue) => {
+      return ([
+        ...prevValue,
         {
-          ...prevVal,
           id: uuidv4(),
-          [e.target.name]: val,
-          tools: newTools,
-          language: newLanguage,
-        },
-      ];
+          type: filterType,
+          value: textValue,
+        }
+      ]);
     });
   };
 
+  const handleRemoveItem = (id) => {
+    // To remove an item filter item id
+    const filteredItems = filterContainer.filter((filterItem) => (
+      filterItem.id !== id
+    ));
+    setFilterContainer(filteredItems);
+  };
+
+
   const handleClear = () => {
+    // To clear set filter to false and filterContainer to empty array
     setFilter(false);
-    setFilterContainer([
-      {
-        level: "",
-        role: "",
-        // tools: [],
-        // language: [],
-      },
-    ]);
+    setFilterContainer([]);
   };
 
   return (
@@ -69,6 +65,7 @@ const Hero = () => {
         myData={myData}
         filterContainer={filterContainer}
         handleClear={handleClear}
+        handleRemoveItem={handleRemoveItem}
       />
       {myData.map((item) => {
         const {
@@ -145,6 +142,7 @@ const Hero = () => {
                       <button
                         type='button'
                         className='btn'
+                        name='tool'
                         onClick={handleClick}
                       >
                         {tool}
@@ -159,6 +157,7 @@ const Hero = () => {
                       <button
                         type='button'
                         className='btn'
+                        name='language'
                         onClick={handleClick}
                       >
                         {tool}
