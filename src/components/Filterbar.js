@@ -1,12 +1,12 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-const Filterbar = ({ isFilterOpen, filterContainer, handleClear, myData }) => {
+const Filterbar = ({ isFilterOpen, handleRemoveItem, filterContainer, handleClear, myData }) => {
   // const { level, role, tools, language } = filterContainer;
   console.log(filterContainer);
 
-  const removeTag = (e) => {
-    console.log(e.target.previousElementSibling);
+  const removeTag = (id) => {
+    handleRemoveItem(id);
   };
 
   if (isFilterOpen)
@@ -19,12 +19,12 @@ const Filterbar = ({ isFilterOpen, filterContainer, handleClear, myData }) => {
         <div className='text-btn'>
           <ul className='filter-list'>
             {filterContainer.map((item) => {
-              const { id, level, tools, languages, role } = item;
+              const { id, value } = item;
 
               return (
                 <li className='tag-filter' key={id}>
-                  <p className='filtered'>{level}</p>
-                  <button className='close-btn' onClick={removeTag}>
+                  <p className='filtered'>{value}</p>
+                  <button className='close-btn' onClick={() => removeTag(id)}>
                     <AiOutlineClose />
                   </button>
                 </li>
